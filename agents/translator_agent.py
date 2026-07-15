@@ -1,0 +1,27 @@
+"""
+Translator Agent
+"""
+
+from services.gemini_service import GeminiTranslator
+
+
+def translator_node(state, translator=None):
+    """
+    Translate text using Gemini.
+
+    During normal execution, a GeminiTranslator is created.
+    During testing, a fake translator can be injected.
+    """
+
+    if translator is None:
+        translator = GeminiTranslator()
+
+    translated_text = translator.translate(
+        text=state["input_text"],
+        source_language=state["source_language"],
+        target_language=state["target_language"],
+    )
+
+    state["translated_text"] = translated_text
+
+    return state
