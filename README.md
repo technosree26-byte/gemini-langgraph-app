@@ -1,89 +1,308 @@
-GEMINI-LANGGRAPH-APP
+# 🌍 AI Translation Agent
 
-A lightweight Python app that integrates translation, text-to-speech (TTS), file handling, and validation workflows using modular agents and services. Designed as a developer-friendly prototype for language processing pipelines and UI-driven translation tasks.
+An end-to-end AI-powered multilingual document translation application built with **Google Gemini**, **LangGraph**, and **Streamlit**.
 
-## Key Features
+The application translates text or uploaded documents into multiple languages using a modular multi-agent workflow. It also generates downloadable speech from the translated output.
 
-- Translation using the `agents/translator_agent.py` pipeline
-- Text-to-speech (TTS) via `services/gtts_service.py`
-- File import/export and parsing utilities in `services/file_service.py`, `csv_service.py`, `excel_service.py`, and `pdf_service.py`
-- Validation and guardrails in `guardrails/validators.py`
-- Simple UI components under `ui/` for uploading, previewing, and playing audio
-- Tests with `pytest` under `tests/`
+---
 
-## Requirements
+## Features
 
-- Python 3.10+ (or the version specified in `requirements.txt`)
-- Install dependencies with:
+- 🌐 AI-powered translation using Gemini 2.5 Flash
+- 🧠 LangGraph workflow orchestration
+- 📄 Translate documents
+  - TXT
+  - PDF
+  - CSV
+  - Excel (.xlsx)
+- 🎙 Generate speech (MP3)
+- 🔒 Guardrails for validation
+- 📊 Translation statistics
+- 🎨 Modern Streamlit UI
+- ⚡ Modular agent architecture
 
-```bash
-python -m pip install -r requirements.txt
+---
+
+## Tech Stack
+
+| Layer | Technology |
+|--------|------------|
+| Frontend | Streamlit |
+| Workflow | LangGraph |
+| LLM | Google Gemini 2.5 Flash |
+| Speech | gTTS |
+| PDF | PyPDF |
+| CSV | Pandas |
+| Excel | OpenPyXL |
+| Environment | Python 3.11 |
+
+---
+
+# Project Structure
+
+```
+gemini-langgraph-app/
+│
+├── agents/
+│   ├── translator_agent.py
+│   ├── retriever_agent.py
+│   ├── validator_agent.py
+│   └── speech_agent.py
+│
+├── app/
+│   ├── graph.py
+│   ├── state.py
+│   ├── router.py
+│   ├── config.py
+│   └── main.py
+│
+├── guardrails/
+│   ├── file_guard.py
+│   ├── input_guard.py
+│   ├── language_guard.py
+│   └── prompt_guard.py
+│
+├── services/
+│   ├── gemini_service.py
+│   ├── file_service.py
+│   ├── pdf_service.py
+│   ├── csv_service.py
+│   ├── excel_service.py
+│   └── speech_service.py
+│
+├── ui/
+│   ├── sidebar.py
+│   ├── cards.py
+│   ├── styles.py
+│   ├── uploader.py
+│   ├── translator_ui.py
+│   └── audio_player.py
+│
+├── tests/
+├── data/
+├── requirements.txt
+└── README.md
 ```
 
-## Configuration
+---
 
-Configure API keys and runtime options in `app/config.py`. Common settings include:
+# Architecture
 
-- Gemini/API credentials (if required by `services/gemini_service.py`)
-- Default input/output directories in `data/`
-
-Environment variables can also be used; check `app/config.py` for available keys and defaults.
-
-## Quick Start
-
-1. Create and activate a virtual environment:
-
-```bash
-python -m venv .venv
-source .venv/Scripts/activate   # Windows: .venv\Scripts\Activate.ps1 or .venv\Scripts\activate.bat
+```
+                Streamlit UI
+                     │
+                     ▼
+             User Input / Upload
+                     │
+                     ▼
+              LangGraph Workflow
+                     │
+      ┌──────────────┴──────────────┐
+      │                             │
+ Validator Agent             Retriever Agent
+      │                             │
+      └──────────────┬──────────────┘
+                     ▼
+             Translator Agent
+                     │
+          Google Gemini API
+                     │
+                     ▼
+              Translated Text
+                     │
+                     ▼
+              Speech Agent
+                     │
+                     ▼
+             MP3 Audio Output
 ```
 
-2. Install dependencies:
+---
+
+# LangGraph Workflow
+
+```
+START
+
+↓
+
+Validator
+
+↓
+
+Retriever
+
+↓
+
+Translator
+
+↓
+
+Speech
+
+↓
+
+END
+```
+
+---
+
+# Guardrails
+
+The application contains lightweight guardrails that validate user input before reaching the LLM.
+
+### Input Guard
+
+- Empty input detection
+- Maximum character validation
+
+### Language Guard
+
+- Supported language validation
+- Language normalization
+
+### Prompt Guard
+
+- Prompt sanitization
+- Whitespace cleanup
+- Prompt truncation
+
+### File Guard
+
+- Supported extensions
+- Upload validation
+
+---
+
+# Installation
+
+Clone the repository
+
+```bash
+git clone https://github.com/technosree26-byte/gemini-langgraph-app.git
+```
+
+Move inside the project
+
+```bash
+cd gemini-langgraph-app
+```
+
+Create a virtual environment
+
+```bash
+python -m venv venv
+```
+
+Activate
+
+Windows
+
+```bash
+venv\Scripts\activate
+```
+
+Linux / Mac
+
+```bash
+source venv/bin/activate
+```
+
+Install dependencies
 
 ```bash
 pip install -r requirements.txt
 ```
 
-3. Run the application (development mode):
+---
 
-```bash
-python -m app.main
+# Environment Variables
+
+Create a `.env` file
+
+```
+GEMINI_API_KEY=YOUR_API_KEY
 ```
 
-4. Run tests:
+---
 
-```bash
-pytest
+# Run
+
+```
+streamlit run app/main.py
 ```
 
-## Usage Examples
+---
 
-- Translate a text file: Use the UI uploader or call the translator agent directly via `agents/translator_agent.py`.
-- Generate speech: Use `services/gtts_service.py` to convert translated text into audio files stored in `data/output/`.
+# Supported Languages
 
-Refer to the source modules in `agents/` and `services/` for programmatic examples and available function signatures.
+- English
+- French
+- Spanish
+- German
+- Hindi
+- Tamil
+- Chinese
+- Japanese
 
-## Project Structure
+---
 
-- `app/` — application entry, routing, graph/state management
-- `agents/` — high-level agent workflows (translator, speech, retriever, validator)
-- `services/` — lower-level integrations (Gemini, file I/O, TTS, PDF/CSV/Excel handling)
-- `ui/` — UI components and helpers for desktop/web front-ends
-- `guardrails/` — validation rules and input/output checks
-- `prompts/` — prompts used by language agent(s)
-- `data/` — default `input/` and `output/` folders for files
-- `tests/` — pytest test suite
+# Future Improvements
 
-## Contributing
+- OCR support
+- Image translation
+- Translation memory
+- Multiple LLM providers
+- Azure Speech
+- Whisper speech recognition
+- Docker deployment
+- CI/CD using GitHub Actions
 
-- Fork the repo and create a feature branch
-- Run tests locally with `pytest` before submitting a PR
-- Follow existing code style and add tests for new behavior
+---
 
-## License
+# Screenshots
 
-Add your license here (e.g., MIT). If you don't yet have a license, include one or contact the maintainer.
+Add screenshots here after running the application.
 
-## Maintainer
+---
 
-Provide maintainer contact information or repository URL here.
+# Author
+
+Santasree
+
+---
+
+# License
+
+MIT License
+
+
+## 🏗️ System Architecture
+
+```mermaid
+flowchart TD
+
+A[Streamlit UI]
+
+A --> B[Validator Agent]
+
+B --> C{Uploaded File?}
+
+C -->|Yes| D[Retriever Agent]
+
+C -->|No| E[Translator Agent]
+
+D --> E
+
+E --> F[Gemini 2.5 Flash]
+
+F --> G[Translated Text]
+
+G --> H{Generate Audio?}
+
+H -->|Yes| I[Speech Agent]
+
+H -->|No| J[Display Output]
+
+I --> J
+```
