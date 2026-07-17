@@ -14,3 +14,21 @@ def speech_router(state):
         return "speech"
 
     return "output"
+
+builder.add_conditional_edges(
+    "validator",
+    input_router,
+    {
+        "retriever": "retriever",
+        "translator": "translator",
+    },
+)
+
+builder.add_conditional_edges(
+    "translator",
+    speech_router,
+    {
+        "speech": "speech",
+        "output": END,
+    },
+)

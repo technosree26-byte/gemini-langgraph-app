@@ -1,19 +1,35 @@
-# Sidebar UI component
+"""
+Sidebar UI component
+"""
+
 import streamlit as st
 
 
 def render_sidebar():
     """
-    Render the application sidebar.
-    Returns:
-        source_lang, target_lang
+    Render application sidebar.
+    Returns
+    -------
+    source_language
+    target_language
     """
 
-    st.sidebar.title("⚙️ Settings")
+    st.sidebar.markdown(
+        """
+        <h2 style='text-align:center;color:#2496ED;'>
+            🌍 AI Translator
+        </h2>
+        """,
+        unsafe_allow_html=True,
+    )
+
+    st.sidebar.markdown("---")
+
+    st.sidebar.subheader("🌐 Translation Settings")
 
     source_language = st.sidebar.selectbox(
         "Source Language",
-        [
+        (
             "Auto Detect",
             "English",
             "French",
@@ -23,12 +39,12 @@ def render_sidebar():
             "Tamil",
             "Chinese",
             "Japanese",
-        ],
+        ),
     )
 
     target_language = st.sidebar.selectbox(
         "Target Language",
-        [
+        (
             "English",
             "French",
             "Spanish",
@@ -37,13 +53,50 @@ def render_sidebar():
             "Tamil",
             "Chinese",
             "Japanese",
-        ],
+        ),
     )
 
     st.sidebar.markdown("---")
+
+    st.sidebar.subheader("📄 Supported Files")
+
+    st.sidebar.success("✓ PDF")
+    st.sidebar.success("✓ TXT")
+    st.sidebar.success("✓ CSV")
+    st.sidebar.success("✓ Excel (.xlsx)")
+
+    st.sidebar.markdown("---")
+
+    st.sidebar.subheader("🎙 Features")
+
+    st.sidebar.write("✅ AI Translation")
+    st.sidebar.write("✅ LangGraph Workflow")
+    st.sidebar.write("✅ Speech Generation")
+    st.sidebar.write("✅ Document Translation")
+
+    st.sidebar.markdown("---")
+
     st.sidebar.info(
-        "LangGraph Translation Agent\n\n"
-        "Supports text translation, document translation, and speech synthesis."
+        """
+**Powered By**
+
+- Google Gemini 2.5 Flash
+- LangGraph
+- Streamlit
+- gTTS Speech
+"""
+    )
+
+    st.sidebar.markdown(
+        """
+<div style="text-align:center;
+            color:gray;
+            font-size:12px;
+            padding-top:20px;">
+Version 1.0.0
+</div>
+""",
+        unsafe_allow_html=True,
     )
 
     return source_language, target_language

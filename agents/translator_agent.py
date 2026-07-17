@@ -16,12 +16,18 @@ def translator_node(state, translator=None):
     if translator is None:
         translator = GeminiTranslator()
 
-    translated_text = translator.translate(
-        text=state["input_text"],
-        source_language=state["source_language"],
-        target_language=state["target_language"],
-    )
+    try:
+        translated_text = translator.translate(
+            text=state["input_text"],
+            source_language=state["source_language"],
+            target_language=state["target_language"],
+        )
 
-    state["translated_text"] = translated_text
+        state["translated_text"] = translated_text
+        state["error"] = ""
+
+    except Exception as e:
+        state["translated_text"] = ""
+        state["error"] = str(e)
 
     return state

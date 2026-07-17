@@ -4,14 +4,14 @@ Gemini translation service.
 
 import google.generativeai as genai
 
-from app.config import GEMINI_API_KEY
+from app.config import GEMINI_API_KEY, GEMINI_MODEL
 
 genai.configure(api_key=GEMINI_API_KEY)
 
 
 class GeminiTranslator:
     def __init__(self):
-        self.model = genai.GenerativeModel("gemini-2.5-flash")
+        self.model = genai.GenerativeModel(GEMINI_MODEL)
 
     def translate(
         self,
@@ -37,6 +37,9 @@ Text:
 Only return the translated text.
 """
 
-        response = self.model.generate_content(prompt)
+        try:
+            response = self.model.generate_content(prompt)
+            return response.text.strip()
 
-        return response.text.strip()
+        except Exception:
+            raise
