@@ -19,3 +19,5 @@ class TranslationState(TypedDict):
     audio_file: str
 
     error: str
+
+    warning: str

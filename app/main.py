@@ -8,6 +8,13 @@ import streamlit as st
 
 from app.graph import translation_graph
 
+from guardrails.input_guard import validate_input_text
+from guardrails.file_guard import is_allowed_file
+from guardrails.language_guard import (
+    validate_source_language,
+    validate_target_language,
+)
+
 from ui.styles import load_css
 from ui.cards import (
     hero,
@@ -28,8 +35,6 @@ from ui.uploader import upload_document
 from ui.audio_player import display_audio
 
 from services.file_service import extract_text
-from agents.speech_agent import speech_node
-
 
 # ---------------------------------------------------
 # Page Config
@@ -72,84 +77,99 @@ with left:
 
     start_card()
 
-    st.subheader("📝 Input")
+    #st.subheader("📝 Input")
 
     user_text = text_input_box()
 
     uploaded_file = upload_document()
 
-    # Extract text from uploaded document
+    # File extraction
     if uploaded_file:
-        user_text = extract_text(uploaded_file)
 
-    # Input statistics
-    if user_text.strip():
+        if not is_allowed_file(uploaded_file.name):
+            st.error("Unsupported file type.")
+            st.stop()
 
-        c1, c2, c3 = st.columns(3)
+        try:
+            user_text = extract_text(uploaded_file)
 
-        c1.metric(
-            "Characters",
-            len(user_text)
-        )
+        except Exception as e:
+            st.error(f"Could not read uploaded file.\n\n{e}")
+            st.stop()
 
-        c2.metric(
-            "Words",
-            len(user_text.split())
-        )
-
-        c3.metric(
-            "Target",
-            target_language
-        )
+    # Translate button belongs on the INPUT side
+    translate = translate_button()
 
     end_card()
-
 # ---------------------------------------------------
+
 # Translation
 # ---------------------------------------------------
 
-translate = translate_button()
-
 if translate:
 
-    if user_text.strip():
+    # -----------------------------------------------
+    # Language Guard
+    # -----------------------------------------------
 
-        state = {
-            "input_text": user_text,
-            "uploaded_file": uploaded_file,
-            "source_language": source_language,
-            "target_language": target_language,
-            "translated_text": "",
-            "generate_audio": True,
-            "audio_file": "",
-            "error": "",
-        }
+    if not validate_source_language(source_language):
+        st.error("Unsupported source language.")
+        st.stop()
 
-        with st.spinner("🌍 Translating..."):
+    if not validate_target_language(target_language):
+        st.error("Unsupported target language.")
+        st.stop()
 
-            result = translation_graph.invoke(state)
+    # -----------------------------------------------
+    # Input Guard
+    # -----------------------------------------------
 
-        if result.get("error"):
+    is_valid, message = validate_input_text(user_text)
 
-            st.error(result["error"])
+    if not is_valid:
+        st.warning(message)
+        st.stop()
 
-        else:
+    state = {
 
-            translated = result["translated_text"]
+        "input_text": user_text,
+        "uploaded_file": uploaded_file,
+        "source_language": source_language,
+        "target_language": target_language,
+        "translated_text": "",
+        "generate_audio": True,
+        "audio_file": "",
+        "error": "",
+        "warning": "",
 
-            st.session_state.translated_text = translated
+    }
 
-            try:
-                st.session_state.audio_path = speech_node(translated)
+    with st.spinner("🌍 Translating..."):
 
-            except Exception:
-                st.session_state.audio_path = ""
+        result = translation_graph.invoke(state)
+    #    st.write("DEBUG RESULT:", result)
+    # -----------------------------------------------
+    # Graph Error Handling
+    # -----------------------------------------------
 
-            st.toast("Translation completed ✅")
+    if result.get("error"):
+
+        st.error(result["error"])
 
     else:
 
-        st.warning("Please enter text or upload a document.")
+        translated = result["translated_text"]
+
+        st.session_state.translated_text = translated
+
+        # Audio was already generated inside the LangGraph workflow
+        st.session_state.audio_path = result.get("audio_file", "")
+
+        # Optional warning from prompt guard
+        if result.get("warning"):
+            st.warning(result["warning"])
+
+        st.toast("Translation completed ✅")
 
 # ---------------------------------------------------
 # Output
@@ -157,27 +177,19 @@ if translate:
 
 with right:
 
-    start_card()
-
     st.subheader("🌐 Translation")
 
     if st.session_state.translated_text:
 
-        show_translation(
-            st.session_state.translated_text
-        )
+        show_translation(st.session_state.translated_text)
 
         translation_statistics(
             user_text,
             st.session_state.translated_text,
         )
 
-        display_audio(
-            st.session_state.audio_path
-        )
+        display_audio(st.session_state.audio_path)
 
     else:
 
-        st.info("Translation will appear here.")
-
-    end_card()
+        st.info("Translation will appear here after you click Translate.")

@@ -23,7 +23,7 @@ def render_sidebar():
         unsafe_allow_html=True,
     )
 
-    st.sidebar.markdown("---")
+    #st.sidebar.markdown("---")
 
     st.sidebar.subheader("🌐 Translation Settings")
 
@@ -56,14 +56,14 @@ def render_sidebar():
         ),
     )
 
-    st.sidebar.markdown("---")
+    #st.sidebar.markdown("---")
 
-    st.sidebar.subheader("📄 Supported Files")
+    #st.sidebar.subheader("📄 Supported Files")
 
-    st.sidebar.success("✓ PDF")
-    st.sidebar.success("✓ TXT")
-    st.sidebar.success("✓ CSV")
-    st.sidebar.success("✓ Excel (.xlsx)")
+    #st.sidebar.success("✓ PDF")
+    #st.sidebar.success("✓ TXT")
+    #st.sidebar.success("✓ CSV")
+    #st.sidebar.success("✓ Excel (.xlsx, .xls)")
 
     st.sidebar.markdown("---")
 
@@ -80,7 +80,7 @@ def render_sidebar():
         """
 **Powered By**
 
-- Google Gemini 2.5 Flash
+- Google Gemini-3.5-flash
 - LangGraph
 - Streamlit
 - gTTS Speech

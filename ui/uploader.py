@@ -9,6 +9,7 @@ SUPPORTED_TYPES = [
     "pdf",
     "csv",
     "xlsx",
+    "xls",
 ]
 
 
@@ -28,10 +29,7 @@ Upload a document to translate.
 
 **Supported formats**
 
-- 📕 PDF
-- 📄 TXT
-- 📊 CSV
-- 📈 Excel (.xlsx)
+📕 PDF 📄 TXT 📊 CSV 📈 Excel (.xlsx, .xls)
 """
     )
 

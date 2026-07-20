@@ -3,7 +3,7 @@ from pathlib import Path
 from typing import Iterable
 
 
-ALLOWED_EXTENSIONS = {"txt", "pdf", "csv", "xlsx"}
+ALLOWED_EXTENSIONS = {"txt", "pdf", "csv", "xlsx", "xls"}
 
 
 def is_allowed_file(filename: str, allowed: Iterable[str] = None) -> bool:

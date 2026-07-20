@@ -9,19 +9,20 @@ def text_input_box():
     """
     Input text area.
     """
+    st.sidebar.markdown("---")
 
-    st.markdown(
-        """
+    #st.markdown(
+ #       """
 ### 📝 Enter Text
 
-Type or paste the text you want to translate.
-"""
-    )
+#Type or paste the text you want to translate.
+#"""
+ #   )
 
     return st.text_area(
-        label="",
+        label="Source Text Input",
         height=260,
-        placeholder="Start typing here...",
+        placeholder="Type or paste the text you want to translate.",
         label_visibility="collapsed",
     )
 
@@ -39,17 +40,11 @@ def translate_button():
 
 def show_translation(translated_text: str):
 
-    st.markdown(
-        """
-### 🌐 Translation
-"""
-    )
-
     st.text_area(
-        label="",
+        label="Translated Output",
         value=translated_text,
         height=260,
-        disabled=True,
+        #disabled=True,
         label_visibility="collapsed",
     )
 

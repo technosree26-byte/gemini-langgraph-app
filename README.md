@@ -306,3 +306,40 @@ H -->|No| J[Display Output]
 
 I --> J
 ```
+
+## 🔄 LangGraph Workflow
+
+```mermaid
+flowchart LR
+
+START --> Validator
+Validator --> Retriever
+Retriever --> Translator
+Translator --> Speech
+Speech --> END
+```
+
+## 📂 Application Components
+
+```mermaid
+graph TD
+
+Main["app/main.py"]
+
+Main --> Graph["LangGraph"]
+
+Graph --> Validator
+Graph --> Retriever
+Graph --> Translator
+Graph --> Speech
+
+Translator --> Gemini["Gemini API"]
+
+Retriever --> FileService["File Service"]
+
+FileService --> PDF
+FileService --> CSV
+FileService --> Excel
+
+Speech --> gTTS
+```
