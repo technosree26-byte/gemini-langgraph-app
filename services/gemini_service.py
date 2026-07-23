@@ -19,7 +19,7 @@ class GeminiTranslator:
     def __init__(self):
         self.model = genai.GenerativeModel(GEMINI_MODEL)
         print("Using Gemini model:", GEMINI_MODEL)
-
+        
     def translate(
         self,
         text: str,

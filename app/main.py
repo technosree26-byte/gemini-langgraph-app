@@ -47,7 +47,6 @@ st.set_page_config(
 )
 
 load_css()
-
 hero()
 status_bar()
 
@@ -68,22 +67,28 @@ if "audio_path" not in st.session_state:
     st.session_state.audio_path = ""
 
 # ---------------------------------------------------
-# Layout
+# INPUT SECTION
 # ---------------------------------------------------
+# Default value to avoid unbound variable errors
+user_text = ""
+uploaded_file = None
+input_col, upload_col = st.columns(2, gap="large")
 
-left, right = st.columns([1, 1], gap="large")
-
-with left:
+# LEFT CARD - TEXT INPUT
+with input_col:
 
     start_card()
 
-    #st.subheader("📝 Input")
-
     user_text = text_input_box()
+
+    end_card()
+
+with upload_col:
+
+    start_card()
 
     uploaded_file = upload_document()
 
-    # File extraction
     if uploaded_file:
 
         if not is_allowed_file(uploaded_file.name):
@@ -94,15 +99,16 @@ with left:
             user_text = extract_text(uploaded_file)
 
         except Exception as e:
-            st.error(f"Could not read uploaded file.\n\n{e}")
+            st.error(f"Could not read uploaded file.\\n\\n{e}")
             st.stop()
 
-    # Translate button belongs on the INPUT side
-    translate = translate_button()
-
-    end_card()
+# ---------------------------------------------------
+# TRANSLATE BUTTON
 # ---------------------------------------------------
 
+translate = translate_button()
+
+# ---------------------------------------------------
 # Translation
 # ---------------------------------------------------
 
@@ -172,24 +178,26 @@ if translate:
         st.toast("Translation completed ✅")
 
 # ---------------------------------------------------
-# Output
+# OUTPUT SECTION
 # ---------------------------------------------------
 
-with right:
+if st.session_state.translated_text:
 
-    st.subheader("🌐 Translation")
+    st.markdown("<br>", unsafe_allow_html=True)
 
-    if st.session_state.translated_text:
+    st.markdown("## 🌐 Translation Result")
 
-        show_translation(st.session_state.translated_text)
+    show_translation(st.session_state.translated_text)
 
-        translation_statistics(
-            user_text,
-            st.session_state.translated_text,
-        )
+    translation_statistics(
+        user_text,
+        st.session_state.translated_text,
+    )
 
-        display_audio(st.session_state.audio_path)
+    display_audio(st.session_state.audio_path)
 
-    else:
+else:
 
-        st.info("Translation will appear here after you click Translate.")
+    st.markdown("<br>", unsafe_allow_html=True)
+
+    st.info("Translation will appear here after you click Translate.")
