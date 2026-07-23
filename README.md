@@ -10,6 +10,9 @@ The application translates text or uploaded documents into multiple languages us
 [![License](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
 ---
+## 🚀 Live Demo
+
+🔗 **Deployed Application:** https://technosree26-byte-gemini-langgraph-app-appmain-tqfz0m.streamlit.app/
 
 ## ✨ Features
 
